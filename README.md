@@ -23,7 +23,7 @@ A Spring Boot application that extracts MySQL database schema information and au
 ## Quick Start
 
 1. Clone the repository
-2. Configure database connection in `src/main/resources/db-config.json`
+2. Copy `src/main/resources/db-config.template.json` to `src/main/resources/db-config.json` and update with your database details
 3. Build the project: `mvn clean package`
 4. Run the application: `java -Xmx512m -jar target/db-meta-generator-1.0-SNAPSHOT.jar`
 5. Access the web interface at `http://localhost:8080`

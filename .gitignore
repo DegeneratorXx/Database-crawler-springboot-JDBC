@@ -15,6 +15,15 @@ buildNumber.properties
 # Generated models
 generated/
 
+# Sensitive configuration files
+src/main/resources/db-config.json
+src/main/resources/application-*.properties
+src/main/resources/application.yml
+src/main/resources/application-*.yml
+*.p12
+*.jks
+*.keystore
+
 # IDE files
 .idea/
 *.iws
@@ -62,10 +71,11 @@ replay_pid*
 ehthumbs.db
 Thumbs.db
 
-# Application properties with sensitive data
-# src/main/resources/application-local.properties
-# src/main/resources/application-dev.properties
-# src/main/resources/application-prod.properties
+# Environment configuration
+.env
+.env.local
+*.env.production
+.env.development
 
 # Temp files
 tmp/

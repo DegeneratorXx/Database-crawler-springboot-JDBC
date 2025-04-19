@@ -1,0 +1,7 @@
+{
+  "url": "jdbc:mysql://localhost:3306/your_database",
+  "username": "your_username",
+  "password": "your_password",
+  "modelPackage": "com.dbmetagen.app.model",
+  "outputDirectory": "generated"
+} 
