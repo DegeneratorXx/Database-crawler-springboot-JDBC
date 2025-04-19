@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -62,8 +63,8 @@ public class ConfigurationController {
             }
             
             // Validate database URL format
-            String url = configMap.get("url");
-            if (url == null || !url.startsWith("jdbc:")) {
+            String inputUrl = configMap.get("url");
+            if (inputUrl == null || !inputUrl.startsWith("jdbc:")) {
                 Map<String, Object> error = new HashMap<>();
                 error.put("status", "error");
                 error.put("message", "Invalid database URL format. Must start with 'jdbc:'");
@@ -86,12 +87,18 @@ public class ConfigurationController {
             // Clear the cached database metadata
             modelGeneratorService.clearCache();
             
+            // Generate response
+            String dbUrl = databaseConfig.getUrl();
+            String dbName = dbUrl.substring(dbUrl.lastIndexOf("/") + 1);
+            String outputPath = databaseConfig.getOutputDirectory() + File.separator + dbName;
+            
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Database configuration updated successfully");
-            response.put("url", databaseConfig.getUrl());
+            response.put("url", dbUrl);
             response.put("username", databaseConfig.getUsername());
             response.put("modelPackage", databaseConfig.getModelPackage());
             response.put("outputDirectory", databaseConfig.getOutputDirectory());
+            response.put("modelOutputPath", outputPath + File.separator + databaseConfig.getModelPackage().replace('.', File.separatorChar));
             response.put("status", "success");
             
             return ResponseEntity.ok(response);
@@ -130,8 +137,8 @@ public class ConfigurationController {
                 }
                 
                 // Validate database URL format
-                String url = json.getString("url");
-                if (!url.startsWith("jdbc:")) {
+                String inputUrl = json.getString("url");
+                if (!inputUrl.startsWith("jdbc:")) {
                     return ResponseEntity.badRequest().body("Invalid database URL format. Must start with 'jdbc:'");
                 }
                 
@@ -149,12 +156,18 @@ public class ConfigurationController {
             // Clear the cached database metadata
             modelGeneratorService.clearCache();
             
+            // Generate response
+            String dbUrl = databaseConfig.getUrl();
+            String dbName = dbUrl.substring(dbUrl.lastIndexOf("/") + 1);
+            String outputPath = databaseConfig.getOutputDirectory() + File.separator + dbName;
+            
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Database configuration updated successfully");
-            response.put("url", databaseConfig.getUrl());
+            response.put("url", dbUrl);
             response.put("username", databaseConfig.getUsername());
             response.put("modelPackage", databaseConfig.getModelPackage());
             response.put("outputDirectory", databaseConfig.getOutputDirectory());
+            response.put("modelOutputPath", outputPath + File.separator + databaseConfig.getModelPackage().replace('.', File.separatorChar));
             response.put("status", "success");
             
             return ResponseEntity.ok(response);

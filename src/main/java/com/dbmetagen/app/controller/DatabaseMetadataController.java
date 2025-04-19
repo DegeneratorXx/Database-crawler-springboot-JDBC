@@ -166,12 +166,18 @@ public class DatabaseMetadataController {
      */
     private void saveModelToFile(String className, String modelCode) throws IOException {
         // Get configuration from service
-        String outputDirectory = databaseConfig.getOutputDirectory();
+        String baseOutputDirectory = databaseConfig.getOutputDirectory();
         String modelPackage = databaseConfig.getModelPackage();
+        
+        // Get database name from metadata for subfolder organization
+        String databaseName = modelGeneratorService.getDatabaseMetadata().getDatabaseName();
+        
+        // Create database-specific output directory
+        String dbSpecificOutputDir = baseOutputDirectory + File.separator + databaseName;
         
         // Create package directory structure
         String packagePath = modelPackage.replace('.', '/');
-        File outputDir = new File(outputDirectory);
+        File outputDir = new File(dbSpecificOutputDir);
         File packageDir = new File(outputDir, packagePath);
         
         // Ensure directories exist

@@ -2,6 +2,6 @@
   "password": "lakshit",
   "modelPackage": "com.dbmetagen.app.model",
   "outputDirectory": "generated",
-  "url": "jdbc:mysql://localhost:3306/test_crawler",
+  "url": "jdbc:mysql://localhost:3306/test2",
   "username": "root"
 }

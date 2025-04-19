@@ -49,15 +49,24 @@ public class ModelGeneratorServiceImpl implements ModelGeneratorService {
         DatabaseMetadata metadata = getDatabaseMetadata();
         Map<String, String> generatedModels = new HashMap<>();
         
-        // Ensure output directory exists
-        File outputDir = new File(databaseConfig.getOutputDirectory());
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
+        // Get database name for organization
+        String databaseName = metadata.getDatabaseName();
+        
+        // Ensure base output directory exists
+        File baseOutputDir = new File(databaseConfig.getOutputDirectory());
+        if (!baseOutputDir.exists()) {
+            baseOutputDir.mkdirs();
+        }
+        
+        // Create database-specific output directory
+        File dbOutputDir = new File(baseOutputDir, databaseName);
+        if (!dbOutputDir.exists()) {
+            dbOutputDir.mkdirs();
         }
         
         // Create package directory structure
         String packagePath = databaseConfig.getModelPackage().replace('.', '/');
-        File packageDir = new File(outputDir, packagePath);
+        File packageDir = new File(dbOutputDir, packagePath);
         if (!packageDir.exists()) {
             packageDir.mkdirs();
         }
