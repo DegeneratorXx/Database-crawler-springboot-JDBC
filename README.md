@@ -8,8 +8,6 @@ A Spring Boot application that extracts MySQL database schema information and au
 - Automatically generates Java model classes for each table
 - Organizes generated models by database name
 - Provides REST APIs to access database structure and generated models
-- Web UI for uploading configuration and testing database connections
-- Multiple configuration options (file upload, direct JSON)
 - Database connection testing
 - Comprehensive error handling and validation
 - Uses layered architecture (Controller, Service, Repository)
@@ -19,6 +17,7 @@ A Spring Boot application that extracts MySQL database schema information and au
 - Java 11 or later
 - Maven
 - MySQL database
+- Postman or any REST client for API testing
 
 ## Quick Start
 
@@ -26,11 +25,11 @@ A Spring Boot application that extracts MySQL database schema information and au
 2. Copy `src/main/resources/db-config.template.json` to `src/main/resources/db-config.json` and update with your database details
 3. Build the project: `mvn clean package`
 4. Run the application: `java -Xmx512m -jar target/db-meta-generator-1.0-SNAPSHOT.jar`
-5. Access the web interface at `http://localhost:8080`
+5. Use Postman or another REST client to interact with the API endpoints
 
 ## Configuration
 
-You have three options to configure the database connection:
+You have two options to configure the database connection:
 
 ### Option 1: Edit the configuration file directly
 
@@ -46,15 +45,7 @@ Edit the `src/main/resources/db-config.json` file to set your database connectio
 }
 ```
 
-### Option 2: Upload a custom configuration file
-
-The application provides a web interface to upload your own configuration file:
-
-1. Open a web browser and navigate to `http://localhost:8080`
-2. Use the upload form to submit your custom `db-config.json` file
-3. The application will immediately switch to using the new configuration
-
-### Option 3: Use the REST API with direct JSON
+### Option 2: Use the REST API with direct JSON
 
 Send a POST request to `/api/config/update` with your configuration as JSON:
 
@@ -107,7 +98,6 @@ mvn spring-boot:run
 ### Configuration
 
 - `GET /api/config/current` - Get current database configuration (without password)
-- `POST /api/config/upload` - Upload custom database configuration file
 - `POST /api/config/update` - Update configuration using direct JSON body
 - `GET /api/config/test-connection` - Test the current database connection
 
@@ -149,10 +139,6 @@ The application follows a layered architecture:
 - Exposes REST APIs for accessing metadata and models
 - Handles configuration management and database connections
 - Provides validation and error handling
-
-### Web Interface
-- Simple HTML/JavaScript UI for configuration management
-- Provides feedback on connection status and errors
 
 ## Testing
 

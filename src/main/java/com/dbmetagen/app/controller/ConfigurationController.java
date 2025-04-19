@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,75 +108,6 @@ public class ConfigurationController {
         }
     }
     
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadDatabaseConfig(@RequestParam("file") MultipartFile file) {
-        try {
-            // Check if the file is empty
-            if (file.isEmpty()) {
-                return ResponseEntity.badRequest().body("Please upload a non-empty db-config.json file");
-            }
-            
-            // Check if the file is a JSON file
-            if (!file.getOriginalFilename().endsWith(".json")) {
-                return ResponseEntity.badRequest().body("Please upload a JSON file");
-            }
-            
-            // Validate JSON content and required fields
-            String jsonContent = new String(file.getBytes(), StandardCharsets.UTF_8);
-            try {
-                JSONObject json = new JSONObject(jsonContent);
-                
-                // Check required fields
-                String[] requiredFields = {"url", "username", "password", "modelPackage", "outputDirectory"};
-                for (String field : requiredFields) {
-                    if (!json.has(field) || json.getString(field).trim().isEmpty()) {
-                        return ResponseEntity.badRequest().body("Missing required field: " + field);
-                    }
-                }
-                
-                // Validate database URL format
-                String inputUrl = json.getString("url");
-                if (!inputUrl.startsWith("jdbc:")) {
-                    return ResponseEntity.badRequest().body("Invalid database URL format. Must start with 'jdbc:'");
-                }
-                
-            } catch (JSONException e) {
-                return ResponseEntity.badRequest().body("Invalid JSON format: " + e.getMessage());
-            }
-            
-            // Save the file to the resources directory
-            Path targetPath = Paths.get("src/main/resources/db-config.json");
-            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-            
-            // Force reload of database config
-            databaseConfig.reloadConfiguration();
-            
-            // Clear the cached database metadata
-            modelGeneratorService.clearCache();
-            
-            // Generate response
-            String dbUrl = databaseConfig.getUrl();
-            String dbName = dbUrl.substring(dbUrl.lastIndexOf("/") + 1);
-            String outputPath = databaseConfig.getOutputDirectory() + File.separator + dbName;
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Database configuration updated successfully");
-            response.put("url", dbUrl);
-            response.put("username", databaseConfig.getUsername());
-            response.put("modelPackage", databaseConfig.getModelPackage());
-            response.put("outputDirectory", databaseConfig.getOutputDirectory());
-            response.put("modelOutputPath", outputPath + File.separator + databaseConfig.getModelPackage().replace('.', File.separatorChar));
-            response.put("status", "success");
-            
-            return ResponseEntity.ok(response);
-        } catch (IOException e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("status", "error");
-            errorResponse.put("message", "Failed to upload configuration: " + e.getMessage());
-            return ResponseEntity.internalServerError().body(errorResponse);
-        }
-    }
-
     @GetMapping("/test-connection")
     public ResponseEntity<?> testDatabaseConnection() {
         Map<String, Object> response = new HashMap<>();
