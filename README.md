@@ -8,6 +8,10 @@ A Spring Boot application that extracts MySQL database schema information and au
 - Automatically generates Java model classes for each table
 - Provides REST APIs to access database structure and generated models
 - Uses layered architecture (Controller, Service, Repository)
+- Web UI for uploading configuration and testing database connections
+- Comprehensive error handling and validation
+- Automatic database structure detection
+- Java model class generation with proper field types and relationships
 
 ## Requirements
 
@@ -17,7 +21,11 @@ A Spring Boot application that extracts MySQL database schema information and au
 
 ## Configuration
 
-1. Edit the `src/main/resources/db-config.json` file to set your database connection details:
+You have two options to configure the database connection:
+
+### Option 1: Edit the configuration file directly
+
+Edit the `src/main/resources/db-config.json` file to set your database connection details:
 
 ```json
 {
@@ -28,6 +36,16 @@ A Spring Boot application that extracts MySQL database schema information and au
   "outputDirectory": "generated"
 }
 ```
+
+### Option 2: Upload a custom configuration file
+
+The application provides a web interface to upload your own configuration file. After starting the application:
+
+1. Open a web browser and navigate to `http://localhost:8080`
+2. Use the upload form to submit your custom `db-config.json` file
+3. The application will immediately switch to using the new configuration
+
+This is particularly useful when you want to connect to different databases without restarting the application.
 
 ## Building the Application
 
@@ -59,6 +77,13 @@ mvn spring-boot:run
 
 - `GET /api/metadata/models` - Generate model classes for all tables
 - `GET /api/metadata/models/{tableName}` - Generate model class for a specific table
+
+### Configuration
+
+- `GET /api/config/current` - Get current database configuration (without password)
+- `POST /api/config/upload` - Upload custom database configuration file
+- `POST /api/config/update` - Update configuration using direct JSON body
+- `GET /api/config/test-connection` - Test the current database connection
 
 ## Generated Files
 

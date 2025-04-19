@@ -38,6 +38,11 @@ public class ModelGeneratorServiceImpl implements ModelGeneratorService {
         }
         return databaseMetadata;
     }
+    
+    @Override
+    public void clearCache() {
+        databaseMetadata = null;
+    }
 
     @Override
     public Map<String, String> generateModelClasses() {

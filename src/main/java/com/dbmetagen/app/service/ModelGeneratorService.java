@@ -7,6 +7,7 @@ import java.util.Map;
 
 public interface ModelGeneratorService {
     DatabaseMetadata getDatabaseMetadata();
+    void clearCache();
     Map<String, String> generateModelClasses();
     String generateModelClass(TableMetadata tableMetadata);
 } 
