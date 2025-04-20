@@ -186,11 +186,3 @@ If models aren't being generated properly:
 1. Check the output directory permissions
 2. Verify your database contains tables
 3. Ensure the database name is correctly specified in the URL
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contributors
-
-- Original implementation by your name/team 
